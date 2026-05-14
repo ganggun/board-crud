@@ -1,5 +1,6 @@
 package com.example.predict.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
@@ -24,7 +25,13 @@ public class User {
     private String studentId;
 
     @Schema(description = "DAuth username", example = "gildong")
+    @Column(unique = true, length = 30)
     private String username;
+
+    @Column(length = 100)
+    @JsonIgnore
+    @Schema(hidden = true)
+    private String passwordHash;
 
     @Column(nullable = false)
     @Schema(description = "사용자 이름", example = "홍길동")
@@ -75,6 +82,18 @@ public class User {
         this.number = number;
     }
 
+    public User(String username, String passwordHash, String studentId, String name,
+                Integer grade, Integer room, Integer number) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.studentId = studentId;
+        this.name = name;
+        this.grade = grade;
+        this.room = room;
+        this.number = number;
+        this.status = "ACTIVE";
+    }
+
     @PrePersist
     void onCreate() {
         LocalDateTime now = LocalDateTime.now();
@@ -116,6 +135,11 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    @JsonIgnore
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
     public String getName() {

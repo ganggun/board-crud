@@ -20,7 +20,7 @@ public class OpenApiConfig {
                         .version("1.0.0")
                         .description("""
                                 학교 행사 승부예측 서비스 API 문서입니다.
-                                DAuth 로그인 후 발급받은 서비스 JWT를 Swagger Authorize 버튼에 Bearer 토큰으로 등록하면 인증 API를 테스트할 수 있습니다.
+                                아이디/비밀번호 로그인 후 발급받은 서비스 JWT를 Swagger Authorize 버튼에 Bearer 토큰으로 등록하면 인증 API를 테스트할 수 있습니다.
                                 """)
                         .contact(new Contact().name("School Predict Backend")))
                 .schemaRequirement(bearer, new SecurityScheme()

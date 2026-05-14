@@ -14,12 +14,10 @@
 
 ## 주요 흐름
 
-1. 프론트가 DAuth access token을 `POST /auth/dauth`로 보냅니다.
-2. 서버가 `https://dodam-api.b1nd.com/user/me`로 사용자 정보를 조회합니다.
-3. 학생 계정만 허용합니다.
-4. 서버 DB의 사용자 정보를 생성하거나 갱신합니다.
-5. 자체 JWT를 발급합니다.
-6. 이후 API는 `Authorization: Bearer <jwt>`로 호출합니다.
+1. 프론트가 `POST /auth/signup`으로 테스트 계정을 생성합니다.
+2. 이후 `POST /auth/login`에 아이디와 비밀번호를 보내 로그인합니다.
+3. 서버는 자체 JWT를 발급합니다.
+4. 이후 API는 `Authorization: Bearer <jwt>`로 호출합니다.
 
 ## 포인트와 배당률
 
@@ -32,7 +30,8 @@
 
 ## API
 
-- `POST /auth/dauth`: DAuth 로그인
+- `POST /auth/signup`: 회원가입
+- `POST /auth/login`: 아이디/비밀번호 로그인
 - `GET /users/me`: 내 사용자 정보
 - `GET /matches`: 진행 중/예정 경기 목록
 - `POST /matches/{matchId}/predictions`: 예측 참여

@@ -1,7 +1,5 @@
 package com.example.predict.user.service;
 
-import com.example.predict.auth.service.DauthProfile;
-import com.example.predict.auth.service.DauthStudent;
 import com.example.predict.user.domain.User;
 import com.example.predict.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,38 +16,21 @@ public class UserService {
     }
 
     @Transactional
-    public User upsertDauthStudent(DauthProfile profile) {
-        DauthStudent student = profile.student();
-        String studentId = buildStudentId(student);
-        User user = userRepository.findByPublicId(profile.publicId())
-                .or(() -> userRepository.findByStudentId(studentId))
-                .orElseGet(() -> new User(
-                        profile.publicId(),
-                        studentId,
-                        profile.username(),
-                        profile.name(),
-                        profile.phone(),
-                        profile.profileImage(),
-                        profile.status(),
-                        student.grade(),
-                        student.room(),
-                        student.number()
-                ));
+    public User createLocalUser(String username, String passwordHash, String studentId, String name,
+                                Integer grade, Integer room, Integer number) {
+        if (userRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");
+        }
+        if (userRepository.existsByStudentId(studentId)) {
+            throw new IllegalArgumentException("이미 가입된 학번입니다.");
+        }
+        return userRepository.save(new User(username, passwordHash, studentId, name, grade, room, number));
+    }
 
-        user.updateFromDauth(
-                profile.publicId(),
-                studentId,
-                profile.username(),
-                profile.name(),
-                profile.phone(),
-                profile.profileImage(),
-                profile.status(),
-                student.grade(),
-                student.room(),
-                student.number()
-        );
-
-        return userRepository.save(user);
+    @Transactional(readOnly = true)
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -58,7 +39,4 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
-    private String buildStudentId(DauthStudent student) {
-        return "%d%02d%02d".formatted(student.grade(), student.room(), student.number());
-    }
 }
