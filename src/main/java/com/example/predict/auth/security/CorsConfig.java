@@ -19,7 +19,9 @@ public class CorsConfig {
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "http://127.0.0.1:5500",
-                "https://cher1shrxd.github.io/"
+                "https://cher1shrxd.github.io/",
+                "https://cheer-up-smoky.vercel.app/"
+
 
         ));
 
