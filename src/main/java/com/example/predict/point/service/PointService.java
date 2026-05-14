@@ -71,6 +71,24 @@ public class PointService {
         ));
     }
 
+    @Transactional
+    public long addByAdmin(Long userId, long amount) {
+        User user = userService.getById(userId);
+        ensureWallet(user);
+        PointWallet wallet = pointWalletRepository.findByUserIdForUpdate(userId)
+                .orElseThrow(() -> new EntityNotFoundException("포인트 지갑을 찾을 수 없습니다."));
+        wallet.deposit(amount);
+        pointTransactionRepository.save(new PointTransaction(
+                user,
+                null,
+                null,
+                PointTransactionType.ADMIN_ADJUST,
+                amount,
+                wallet.getPoint()
+        ));
+        return wallet.getPoint();
+    }
+
     @Transactional(readOnly = true)
     public long getPoint(Long userId) {
         return pointWalletRepository.findByUserId(userId)
