@@ -83,16 +83,18 @@ main push
 
 GitHub Secrets:
 
-- `DOCKERHUB_TOKEN`
-- `SSH_PASSWORD`
-- `JWT_SECRET`
-- `MYSQL_PASSWORD`
-- `MYSQL_ROOT_PASSWORD`
+- `DOCKER_USERNAME`: Docker Hub 사용자명
+- `DOCKER_PASSWORD`: Docker Hub access token
+- `SERVER_HOST`: 배포 서버 주소
+- `SERVER_USER`: 배포 서버 SSH 사용자
+- `SERVER_PASSWORD`: 배포 서버 SSH 비밀번호
 
 GitHub Variables:
 
 - `JWT_EXPIRES_IN`: `5d`
 - `APP_PORT`: `8081`
+
+서버의 기존 `~/school-predict/.env`에 있는 `JWT_SECRET`, `MYSQL_PASSWORD`, `MYSQL_ROOT_PASSWORD`는 배포 때 덮어쓰지 않습니다.
 
 배포 후 Swagger:
 
