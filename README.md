@@ -14,10 +14,11 @@
 
 ## 주요 흐름
 
-1. 프론트가 `POST /auth/signup`으로 테스트 계정을 생성합니다.
-2. 이후 `POST /auth/login`에 아이디와 비밀번호를 보내 로그인합니다.
-3. 서버는 자체 JWT를 발급합니다.
-4. 이후 API는 `Authorization: Bearer <jwt>`로 호출합니다.
+1. 프론트가 `POST /auth/login`에 아이디와 비밀번호를 보냅니다.
+2. 아이디가 없으면 같은 요청의 사용자 정보로 새 사용자를 생성합니다.
+3. 아이디가 있으면 비밀번호를 검증하고 로그인합니다.
+4. 서버는 자체 JWT를 발급합니다.
+5. 이후 API는 `Authorization: Bearer <jwt>`로 호출합니다.
 
 ## 포인트와 배당률
 
@@ -30,8 +31,7 @@
 
 ## API
 
-- `POST /auth/signup`: 회원가입
-- `POST /auth/login`: 아이디/비밀번호 로그인
+- `POST /auth/login`: 로그인 또는 최초 사용자 생성
 - `GET /users/me`: 내 사용자 정보
 - `GET /matches`: 진행 중/예정 경기 목록
 - `POST /matches/{matchId}/predictions`: 예측 참여

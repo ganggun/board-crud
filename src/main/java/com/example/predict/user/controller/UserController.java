@@ -27,7 +27,7 @@ public class UserController {
             summary = "내 사용자 정보 조회",
             description = """
                     JWT로 인증된 사용자의 DB 저장 정보를 조회합니다.
-                    DAuth에서 가져온 이름, 학번, 학년, 반, 번호와 서버에서 관리하는 role을 확인할 수 있습니다.
+                    로그인 아이디, 이름, 학번, 학년, 반, 번호와 서버에서 관리하는 role을 확인할 수 있습니다.
                     """
     )
     public User me(@Parameter(hidden = true) @CurrentUser LoginUser loginUser) {

@@ -17,14 +17,14 @@ public class User {
     private Long id;
 
     @Column(unique = true)
-    @Schema(description = "DAuth publicId", example = "user-public-id")
+    @Schema(description = "외부 인증 연동용 ID. 현재 자체 로그인에서는 사용하지 않습니다.", example = "external-user-id")
     private String publicId;
 
     @Column(nullable = false, unique = true, length = 20)
     @Schema(description = "학번. 학년 + 반 2자리 + 번호 2자리 형식입니다.", example = "30105")
     private String studentId;
 
-    @Schema(description = "DAuth username", example = "gildong")
+    @Schema(description = "로그인 아이디", example = "gildong")
     @Column(unique = true, length = 30)
     private String username;
 
@@ -44,7 +44,7 @@ public class User {
     @Schema(description = "프로필 이미지 URL")
     private String profileImage;
 
-    @Schema(description = "DAuth 계정 상태", example = "ACTIVE")
+    @Schema(description = "사용자 상태", example = "ACTIVE")
     private String status;
 
     @Enumerated(EnumType.STRING)
