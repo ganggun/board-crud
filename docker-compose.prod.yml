@@ -1,6 +1,9 @@
 services:
   app:
-    image: ${DOCKER_IMAGE}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: school-predict:prod
     container_name: school-predict-app
     depends_on:
       mysql:

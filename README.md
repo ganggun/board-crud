@@ -69,27 +69,30 @@ Swagger는 `/swagger-ui/index.html`에서 확인할 수 있습니다.
 
 ## CI/CD
 
-GitHub Actions가 Docker Hub로 이미지를 push한 뒤 원격 서버에서 `docker compose pull && docker compose up -d`를 실행합니다.
+GitHub Secrets 없이 서버가 직접 `main` 브랜치를 확인하고 배포합니다.
 
-GitHub Secrets:
+서버의 `~/school-predict` 디렉터리에 repo를 clone하고 `.env`를 만든 뒤, cron에서 `scripts/deploy-main.sh`를 실행합니다.
 
-- `DOCKERHUB_USERNAME`
-- `DOCKERHUB_TOKEN`
-- `SSH_HOST`: `59.25.222.247`
-- `SSH_PORT`: `2222`
-- `SSH_USERNAME`: `ganggun0113`
-- `SSH_PASSWORD`
-- `JWT_SECRET`
-- `MYSQL_PASSWORD`
-- `MYSQL_ROOT_PASSWORD`
+서버 `.env` 예시:
 
-GitHub Variables:
+```bash
+JWT_SECRET=temporary-one-off-secret-temporary-one-off-secret
+JWT_EXPIRES_IN=5d
+MYSQL_PASSWORD=school_predict
+MYSQL_ROOT_PASSWORD=school_predict_root
+APP_PORT=8081
+```
 
-- `APP_PORT`: `8081`
-- `JWT_EXPIRES_IN`: `5d`
+cron 예시:
+
+```bash
+* * * * * /home/ganggun0113/school-predict/scripts/deploy-main.sh >> /home/ganggun0113/school-predict/deploy.log 2>&1
+```
+
+`main`에 새 커밋이 올라오면 서버가 `git fetch`, `git reset --hard origin/main`, `docker compose up -d --build` 순서로 갱신합니다.
 
 배포 후 Swagger:
 
 ```text
-http://59.25.222.247:8081/swagger-ui/index.html
+https://supdobby.me/swagger-ui/index.html
 ```
