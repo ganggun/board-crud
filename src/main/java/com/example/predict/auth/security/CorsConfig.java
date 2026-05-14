@@ -18,8 +18,9 @@ public class CorsConfig {
         // 프론트 주소
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
-                "http://localhost:5173",
-                "https://너의프론트도메인.com"
+                "http://127.0.0.1:5500",
+                "https://cher1shrxd.github.io/"
+
         ));
 
         // 쿠키/인증 헤더 허용
