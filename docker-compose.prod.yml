@@ -1,0 +1,48 @@
+services:
+  app:
+    image: ${DOCKER_IMAGE}
+    container_name: school-predict-app
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      SERVER_PORT: 8080
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-5d}
+      DB_URL: jdbc:mysql://mysql:3306/school_predict
+      DB_USERNAME: school_predict
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_DRIVER: com.mysql.cj.jdbc.Driver
+      JPA_DDL_AUTO: update
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "${APP_PORT:-8081}:8080"
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.4
+    container_name: school-predict-mysql
+    environment:
+      MYSQL_DATABASE: school_predict
+      MYSQL_USER: school_predict
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.2
+    container_name: school-predict-redis
+    restart: unless-stopped
+
+volumes:
+  mysql-data:

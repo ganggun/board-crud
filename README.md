@@ -1,0 +1,96 @@
+# School Predict Backend
+
+학교 행사, 체육대회, 교내 e-sports 대회용 승부예측 백엔드입니다.
+
+## 기술 스택
+
+- Spring Boot
+- Spring Security + JWT
+- Spring Data JPA
+- Redis
+- Spring SSE
+- MySQL
+- Swagger
+
+## 주요 흐름
+
+1. 프론트가 DAuth access token을 `POST /auth/dauth`로 보냅니다.
+2. 서버가 `https://dodam-api.b1nd.com/user/me`로 사용자 정보를 조회합니다.
+3. 학생 계정만 허용합니다.
+4. 서버 DB의 사용자 정보를 생성하거나 갱신합니다.
+5. 자체 JWT를 발급합니다.
+6. 이후 API는 `Authorization: Bearer <jwt>`로 호출합니다.
+
+## 포인트와 배당률
+
+- 사용자는 경기 시작 전 `PREDICTING` 상태인 경기만 예측할 수 있습니다.
+- 예측 시 포인트가 즉시 차감됩니다.
+- 배당률은 전체 베팅 풀과 선택 팀 베팅 풀을 기준으로 실시간 계산합니다.
+- 예측이 저장될 때 해당 시점의 배당률이 고정됩니다.
+- 결과 등록 시 `betPoint * odds`가 원금 포함 보상으로 지급됩니다.
+- 기본 포인트는 첫 지갑 생성 시 1000점입니다.
+
+## API
+
+- `POST /auth/dauth`: DAuth 로그인
+- `GET /users/me`: 내 사용자 정보
+- `GET /matches`: 진행 중/예정 경기 목록
+- `POST /matches/{matchId}/predictions`: 예측 참여
+- `GET /predictions/me`: 내 예측 목록
+- `GET /points/me`: 내 포인트
+- `GET /points/rankings`: 랭킹
+- `GET /sse/odds`: 배당률 변경 SSE 구독
+- `POST /admin/matches`: 경기 생성, ADMIN 전용
+- `PUT /admin/matches/{matchId}`: 경기 수정, ADMIN 전용
+- `DELETE /admin/matches/{matchId}`: 경기 삭제, ADMIN 전용
+- `POST /admin/matches/{matchId}/result`: 결과 등록 및 정산, ADMIN 전용
+
+## 환경변수
+
+```bash
+JWT_SECRET=temporary-one-off-secret-temporary-one-off-secret
+JWT_EXPIRES_IN=5d
+DB_URL=jdbc:mysql://localhost:3307/school_predict
+DB_USERNAME=school_predict
+DB_PASSWORD=school_predict
+DB_DRIVER=com.mysql.cj.jdbc.Driver
+REDIS_HOST=localhost
+REDIS_PORT=6379
+JPA_DDL_AUTO=update
+```
+
+## 실행
+
+```bash
+docker compose up -d
+```
+
+Swagger는 `/swagger-ui/index.html`에서 확인할 수 있습니다.
+기본 Docker Compose 앱 포트는 `8081`입니다.
+
+## CI/CD
+
+GitHub Actions가 Docker Hub로 이미지를 push한 뒤 원격 서버에서 `docker compose pull && docker compose up -d`를 실행합니다.
+
+GitHub Secrets:
+
+- `DOCKERHUB_USERNAME`
+- `DOCKERHUB_TOKEN`
+- `SSH_HOST`: `59.25.222.247`
+- `SSH_PORT`: `2222`
+- `SSH_USERNAME`: `ganggun0113`
+- `SSH_PASSWORD`
+- `JWT_SECRET`
+- `MYSQL_PASSWORD`
+- `MYSQL_ROOT_PASSWORD`
+
+GitHub Variables:
+
+- `APP_PORT`: `8081`
+- `JWT_EXPIRES_IN`: `5d`
+
+배포 후 Swagger:
+
+```text
+http://59.25.222.247:8081/swagger-ui/index.html
+```
