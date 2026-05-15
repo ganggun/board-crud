@@ -2,6 +2,7 @@ package com.example.predict.auth.service;
 
 import com.example.predict.auth.dto.LoginResponse;
 import com.example.predict.auth.dto.LoginRequest;
+import com.example.predict.point.service.PointService;
 import com.example.predict.user.domain.User;
 import com.example.predict.user.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,11 +16,16 @@ public class AuthService {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final PointService pointService;
 
-    public AuthService(UserService userService, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
+    public AuthService(UserService userService,
+                       JwtTokenProvider jwtTokenProvider,
+                       PasswordEncoder passwordEncoder,
+                       PointService pointService) {
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.passwordEncoder = passwordEncoder;
+        this.pointService = pointService;
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -39,6 +45,7 @@ public class AuthService {
                     resolvePositiveNumber(request.room()),
                     resolvePositiveNumber(request.number())
             );
+            pointService.ensureWallet(createdUser);
             return issueToken(createdUser);
         }
     }
