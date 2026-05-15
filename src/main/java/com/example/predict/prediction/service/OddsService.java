@@ -14,6 +14,8 @@ import java.util.Map;
 @Service
 public class OddsService {
 
+    private static final BigDecimal INITIAL_ODDS = BigDecimal.valueOf(1.00).setScale(2);
+
     private final PredictionRepository predictionRepository;
     private final StringRedisTemplate redisTemplate;
     private final BigDecimal minOdds;
@@ -39,7 +41,10 @@ public class OddsService {
     public BigDecimal calculateProjectedOdds(Long matchId, TeamSide selectedTeam, long newBetPoint) {
         long total = predictionRepository.sumBetPointByMatchId(matchId) + newBetPoint;
         long side = predictionRepository.sumBetPointByMatchIdAndTeam(matchId, selectedTeam) + newBetPoint;
-        if (total <= 0 || side <= 0) {
+        if (total <= 0) {
+            return INITIAL_ODDS;
+        }
+        if (side <= 0) {
             return maxOdds;
         }
 
