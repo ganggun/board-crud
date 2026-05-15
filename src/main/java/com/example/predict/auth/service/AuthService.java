@@ -60,10 +60,18 @@ public class AuthService {
     }
 
     private String resolveStudentId(LoginRequest request) {
-        if (isBlank(request.studentId()) || "1".equals(request.studentId().trim())) {
+        if (isPlaceholderStudentId(request.studentId())) {
             return "U" + Integer.toUnsignedString(request.username().hashCode());
         }
         return request.studentId().trim();
+    }
+
+    private boolean isPlaceholderStudentId(String studentId) {
+        if (isBlank(studentId)) {
+            return true;
+        }
+        String trimmed = studentId.trim();
+        return "1".equals(trimmed) || trimmed.matches("0+");
     }
 
     private Integer resolvePositiveNumber(Integer value) {

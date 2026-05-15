@@ -7,11 +7,11 @@ import jakarta.validation.constraints.Size;
 @Schema(description = "로그인 또는 최초 사용자 생성 요청")
 public record LoginRequest(
         @Schema(description = "로그인에 사용할 아이디. 이미 있으면 로그인하고, 없으면 새 사용자를 생성합니다.", example = "gildong")
-        @NotBlank @Size(min = 3, max = 30)
+        @NotBlank @Size(max = 30)
         String username,
 
-        @Schema(description = "비밀번호. 새 사용자를 만들 때는 BCrypt로 해싱되어 저장됩니다.", example = "password1234")
-        @NotBlank @Size(min = 8, max = 100)
+        @Schema(description = "비밀번호. 빈 값만 아니면 허용하며, 새 사용자를 만들 때는 BCrypt로 해싱되어 저장됩니다.", example = "password1234")
+        @NotBlank @Size(max = 100)
         String password,
 
         @Schema(description = "사용자 이름. 생략하거나 1로 보내면 username을 이름으로 저장합니다.", example = "홍길동")
