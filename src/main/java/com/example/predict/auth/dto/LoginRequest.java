@@ -14,19 +14,19 @@ public record LoginRequest(
         @NotBlank @Size(min = 8, max = 100)
         String password,
 
-        @Schema(description = "사용자 이름. 아이디가 없어서 새 사용자를 생성할 때 필요합니다.", example = "홍길동")
+        @Schema(description = "사용자 이름. 생략하거나 1로 보내면 username을 이름으로 저장합니다.", example = "홍길동")
         String name,
 
-        @Schema(description = "학번. 아이디가 없어서 새 사용자를 생성할 때 필요합니다.", example = "30105")
+        @Schema(description = "학번. 생략하거나 1로 보내면 서버가 username 기반 고유값을 생성합니다.", example = "30105")
         String studentId,
 
-        @Schema(description = "학년. 아이디가 없어서 새 사용자를 생성할 때 필요합니다.", example = "3")
+        @Schema(description = "학년. 생략하면 1로 저장합니다.", example = "1")
         Integer grade,
 
-        @Schema(description = "반. 아이디가 없어서 새 사용자를 생성할 때 필요합니다.", example = "1")
+        @Schema(description = "반. 생략하면 1로 저장합니다.", example = "1")
         Integer room,
 
-        @Schema(description = "번호. 아이디가 없어서 새 사용자를 생성할 때 필요합니다.", example = "5")
+        @Schema(description = "번호. 생략하면 1로 저장합니다.", example = "1")
         Integer number
 ) {
 }

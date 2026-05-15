@@ -30,15 +30,14 @@ public class AuthService {
             }
             return issueToken(user);
         } catch (EntityNotFoundException e) {
-            validateCreateFields(request);
             User createdUser = userService.createLocalUser(
                     request.username(),
                     passwordEncoder.encode(request.password()),
-                    request.studentId(),
-                    request.name(),
-                    request.grade(),
-                    request.room(),
-                    request.number()
+                    resolveStudentId(request),
+                    resolveName(request),
+                    resolvePositiveNumber(request.grade()),
+                    resolvePositiveNumber(request.room()),
+                    resolvePositiveNumber(request.number())
             );
             return issueToken(createdUser);
         }
@@ -53,22 +52,25 @@ public class AuthService {
         );
     }
 
-    private void validateCreateFields(LoginRequest request) {
-        if (isBlank(request.name())) {
-            throw new IllegalArgumentException("새 사용자를 생성하려면 name이 필요합니다.");
+    private String resolveName(LoginRequest request) {
+        if (isBlank(request.name()) || "1".equals(request.name().trim())) {
+            return request.username();
         }
-        if (isBlank(request.studentId())) {
-            throw new IllegalArgumentException("새 사용자를 생성하려면 studentId가 필요합니다.");
+        return request.name().trim();
+    }
+
+    private String resolveStudentId(LoginRequest request) {
+        if (isBlank(request.studentId()) || "1".equals(request.studentId().trim())) {
+            return "U" + Integer.toUnsignedString(request.username().hashCode());
         }
-        if (request.grade() == null || request.grade() <= 0) {
-            throw new IllegalArgumentException("새 사용자를 생성하려면 grade가 필요합니다.");
+        return request.studentId().trim();
+    }
+
+    private Integer resolvePositiveNumber(Integer value) {
+        if (value == null || value <= 0) {
+            return 1;
         }
-        if (request.room() == null || request.room() <= 0) {
-            throw new IllegalArgumentException("새 사용자를 생성하려면 room이 필요합니다.");
-        }
-        if (request.number() == null || request.number() <= 0) {
-            throw new IllegalArgumentException("새 사용자를 생성하려면 number가 필요합니다.");
-        }
+        return value;
     }
 
     private boolean isBlank(String value) {
